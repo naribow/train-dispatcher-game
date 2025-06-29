@@ -1,34 +1,46 @@
-
 import { Application, Graphics } from 'pixi.js';
 
 export class PixiRenderer {
-  private app: Application;
+  private app: Application | null = null;
   private width: number;
   private height: number;
 
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
+  }
+
+  public async init(parentElement: HTMLElement) {
+    // PixiJS Applicationをここで作成
     this.app = new Application({
       width: this.width,
       height: this.height,
       backgroundColor: 0x1099bb, // 青色の背景
     });
-  }
 
-  public init(parentElement: HTMLElement) {
-    parentElement.appendChild(this.app.canvas);
-    this.resize();
-    window.addEventListener('resize', this.resize.bind(this));
+    // appがnullでないことを確認してからcanvasを追加
+    if (this.app) {
+      parentElement.appendChild(this.app.canvas);
+      this.resize();
+      window.addEventListener('resize', this.resize.bind(this));
+    } else {
+      console.error("Failed to initialize PixiJS Application.");
+    }
   }
 
   private resize() {
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
-    this.app.renderer.resize(this.width, this.height);
+    if (this.app) {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.app.renderer.resize(this.width, this.height);
+    }
   }
 
   public drawStationLayout() {
+    if (!this.app) {
+      console.error("Cannot draw layout: PixiJS Application not initialized.");
+      return;
+    }
     // 駅のホーム (例: 2つのホーム)
     const platform1 = new Graphics();
     platform1.beginFill(0xAAAAAA); // 灰色

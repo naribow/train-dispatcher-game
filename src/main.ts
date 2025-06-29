@@ -12,7 +12,7 @@ const gameContainer = document.querySelector<HTMLDivElement>('#game-container');
 
 if (gameContainer) {
   const renderer = new PixiRenderer(window.innerWidth, window.innerHeight);
-  renderer.init(gameContainer);
+  await renderer.init(gameContainer);
   renderer.drawStationLayout();
 } else {
   console.error('Game container not found');
