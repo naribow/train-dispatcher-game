@@ -30,22 +30,6 @@ export class Station {
     // 複雑なレイアウト: 2つのホーム、2本の通過線、いくつかの分岐
     // 座標はGAME_WIDTH = 1280, GAME_HEIGHT = 720 を基準に調整
 
-    // ホーム1 (上)
-    const platform1 = new StraightTrack(
-      'platform1',
-      { x: 100, y: 200 },
-      { x: 1180, y: 200 },
-      []
-    );
-
-    // ホーム2 (下)
-    const platform2 = new StraightTrack(
-      'platform2',
-      { x: 100, y: 500 },
-      { x: 1180, y: 500 },
-      []
-    );
-
     // 線路
     const trackA = new StraightTrack(
       'trackA',
@@ -123,8 +107,6 @@ export class Station {
       ['passingTrack2']
     );
 
-    this.trackSegments.set(platform1.id, platform1);
-    this.trackSegments.set(platform2.id, platform2);
     this.trackSegments.set(trackA.id, trackA);
     this.trackSegments.set(trackA_exit.id, trackA_exit);
     this.trackSegments.set(trackB.id, trackB);
@@ -135,6 +117,18 @@ export class Station {
     this.trackSegments.set(switchB_P2.id, switchB_P2);
     this.trackSegments.set(switchA_PT1.id, switchA_PT1);
     this.trackSegments.set(switchB_PT2.id, switchB_PT2);
+
+    // 線路の接続を更新
+    // trackAのnextSegmentsを更新
+    this.trackSegments.get('trackA')!.nextSegments = ['switchA_P1', 'switchA_PT1', 'trackA_exit'];
+    // trackBのnextSegmentsを更新
+    this.trackSegments.get('trackB')!.nextSegments = ['switchB_P2', 'switchB_PT2', 'trackB_exit'];
+
+    // 分岐器の接続
+    this.trackSegments.get('switchA_P1')!.nextSegments = ['platform1'];
+    this.trackSegments.get('switchB_P2')!.nextSegments = ['platform2'];
+    this.trackSegments.get('switchA_PT1')!.nextSegments = ['passingTrack1'];
+    this.trackSegments.get('switchB_PT2')!.nextSegments = ['passingTrack2'];
   }
 
   public getSegment(id: string): TrackSegment | undefined {
