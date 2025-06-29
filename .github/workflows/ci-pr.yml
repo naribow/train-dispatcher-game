@@ -1,38 +1,11 @@
-name: CI
+
+name: CI on Pull Request
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
 
 jobs:
-  lint_and_format_push:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Format code
-        run: npm run format
-
-      - name: Lint
-        run: npm run lint
-
-  lint_and_format_pr:
-    if: github.event_name == 'pull_request'
+  lint_and_format:
     runs-on: ubuntu-latest
     permissions:
       contents: write
