@@ -1,4 +1,3 @@
-
 import './style.css';
 import { Application, Graphics } from 'pixi.js';
 
@@ -21,6 +20,8 @@ async function initPixi() {
     canvas.height = window.innerHeight;
     gameContainer.appendChild(canvas);
 
+    console.log(`Window dimensions: ${window.innerWidth}x${window.innerHeight}`);
+
     await app.init({
       canvas: canvas,
       backgroundColor: 0x1099bb, // Blue background
@@ -28,16 +29,27 @@ async function initPixi() {
       height: window.innerHeight,
     });
 
+    console.log(`PixiJS app.screen dimensions: ${app.screen.width}x${app.screen.height}`);
+
     // Draw a red square
     const square = new Graphics();
+    const squareSize = 100;
+    const squareX = app.screen.width / 2 - squareSize / 2;
+    const squareY = app.screen.height / 2 - squareSize / 2;
+
+    console.log(`Red square position: x=${squareX}, y=${squareY}, size=${squareSize}`);
+
     square.fill(0xFF0000); // Red
-    square.rect(app.screen.width / 2 - 50, app.screen.height / 2 - 50, 100, 100);
+    square.rect(squareX, squareY, squareSize, squareSize);
     app.stage.addChild(square);
 
     // Resize listener
     window.addEventListener('resize', () => {
       app.renderer.resize(window.innerWidth, window.innerHeight);
-      square.position.set(app.screen.width / 2 - 50, app.screen.height / 2 - 50);
+      const newSquareX = app.screen.width / 2 - squareSize / 2;
+      const newSquareY = app.screen.height / 2 - squareSize / 2;
+      square.position.set(newSquareX, newSquareY);
+      console.log(`Resized: Red square position: x=${newSquareX}, y=${newSquareY}`);
     });
 
   } else {
