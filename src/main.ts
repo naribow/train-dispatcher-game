@@ -10,7 +10,7 @@ const gameContainer = document.querySelector<HTMLDivElement>('#game-container');
 let renderer: PixiRenderer;
 let squareX: number; // 四角形のX座標
 const squareSize = 100; // 四角形のサイズ
-let squareSpeed = 100; // 四角形の移動速度 (pixels/second)
+const squareSpeed = 100; // 四角形の移動速度 (pixels/second)
 let direction = -1; // -1: 左, 1: 右
 let lastTime = 0;
 
