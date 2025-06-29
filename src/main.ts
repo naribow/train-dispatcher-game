@@ -68,6 +68,7 @@ async function initGame() {
     await renderer.init(gameContainer);
 
     station = new Station();
+    renderer.drawStationLayout(station); // 駅のレイアウトは一度だけ描画
 
     // 最初の列車を生成
     trains.push(new Train('train-1', 'segment1', 50));

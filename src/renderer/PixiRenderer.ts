@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Train } from '../game/Train';
@@ -8,11 +7,13 @@ export class PixiRenderer {
   private width: number;
   private height: number;
   private trainContainer: Container;
+  private stationLayoutContainer: Container; // 新しいコンテナ
 
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
     this.trainContainer = new Container();
+    this.stationLayoutContainer = new Container(); // 初期化
   }
 
   public async init(parentElement: HTMLElement) {
@@ -33,7 +34,8 @@ export class PixiRenderer {
       await this.app.init(); // This is important for v8
 
       if (this.app && this.app.canvas) { // Check this.app.canvas after init()
-        this.app.stage.addChild(this.trainContainer);
+        this.app.stage.addChild(this.stationLayoutContainer); // ステージに駅レイアウトコンテナを追加
+        this.app.stage.addChild(this.trainContainer); // ステージに列車コンテナを追加
         this.resize();
         window.addEventListener('resize', this.resize.bind(this));
       } else {
@@ -56,10 +58,8 @@ export class PixiRenderer {
   }
 
   public clearStage() {
-    if (this.app) {
-      this.app.stage.removeChildren();
-      this.app.stage.addChild(this.trainContainer); // Keep train container
-    }
+    // ステージ全体をクリアするのではなく、列車コンテナのみをクリア
+    this.trainContainer.removeChildren();
   }
 
   public drawStationLayout(station: Station) {
@@ -68,43 +68,45 @@ export class PixiRenderer {
       return;
     }
 
-    // Station platforms
+    this.stationLayoutContainer.removeChildren(); // 既存のレイアウトをクリア（初回描画時のみ）
+
+    // 駅のホーム (例: 2つのホーム)
     const platform1 = new Graphics();
     platform1.fill(0xAAAAAA); // Use fill instead of beginFill/endFill
     platform1.rect(50, 200, 700, 50); // Use rect instead of drawRect
-    this.app!.stage.addChild(platform1);
+    this.stationLayoutContainer.addChild(platform1); // stationLayoutContainerに追加
 
     const platform2 = new Graphics();
     platform2.fill(0xAAAAAA);
     platform2.rect(50, 350, 700, 50);
-    this.app!.stage.addChild(platform2);
+    this.stationLayoutContainer.addChild(platform2); // stationLayoutContainerに追加
 
-    // Tracks
+    // 線路 (Stationクラスから取得)
     station.trackSegments.forEach(segment => {
       const track = new Graphics();
       track.stroke({ width: 5, color: 0x333333 }); // Use stroke instead of lineStyle
       track.moveTo(segment.start.x, segment.start.y);
       track.lineTo(segment.end.x, segment.end.y);
-      this.app!.stage.addChild(track);
+      this.stationLayoutContainer.addChild(track); // stationLayoutContainerに追加
     });
 
-    // Signals (placeholders)
+    // 信号機 (プレースホルダー)
     const signal1 = new Graphics();
     signal1.fill(0xFF0000);
     signal1.rect(20, 210, 10, 30);
-    this.app!.stage.addChild(signal1);
+    this.stationLayoutContainer.addChild(signal1); // stationLayoutContainerに追加
 
     const signal2 = new Graphics();
     signal2.fill(0xFF0000);
     signal2.rect(20, 360, 10, 30);
-    this.app!.stage.addChild(signal2);
+    this.stationLayoutContainer.addChild(signal2); // stationLayoutContainerに追加
 
-    // Switches (placeholders)
+    // 分岐器 (プレースホルダー)
     const switch1 = new Graphics();
     switch1.stroke({ width: 5, color: 0x333333 });
     switch1.moveTo(400, 225);
     switch1.lineTo(450, 200); // Temporary switch
-    this.app!.stage.addChild(switch1);
+    this.stationLayoutContainer.addChild(switch1); // stationLayoutContainerに追加
   }
 
   public drawTrains(trains: Train[], station: Station) {
