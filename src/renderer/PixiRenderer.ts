@@ -57,7 +57,7 @@ export class PixiRenderer {
     }
   }
 
-  public drawStationLayout(station: Station) {
+  public drawStationLayout() { // station: Station 引数を削除
     console.log("PixiRenderer: drawStationLayout method called.");
     if (!this.app) {
       console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
@@ -67,44 +67,12 @@ export class PixiRenderer {
     this.stationLayoutContainer.removeChildren(); // 既存のレイアウトをクリア
     console.log("PixiRenderer: stationLayoutContainer cleared.");
 
-    // 駅のホーム (例: 2つのホーム)
-    const platform1 = new Graphics();
-    platform1.fill(0xFFFF00); // 明るい黄色
-    platform1.rect(50, 200, 500, 50); // x, y, width, height
-    this.stationLayoutContainer.addChild(platform1); // stationLayoutContainerに追加
-
-    const platform2 = new Graphics();
-    platform2.fill(0xFFFF00);
-    platform2.rect(50, 350, 500, 50);
-    this.stationLayoutContainer.addChild(platform2); // stationLayoutContainerに追加
-
-    // 線路 (Stationクラスから取得)
-    station.trackSegments.forEach(segment => {
-      const track = new Graphics();
-      track.stroke({ width: 5, color: 0x00FF00 }); // 明るい緑色
-      track.moveTo(segment.start.x, segment.start.y);
-      track.lineTo(segment.end.x, segment.end.y);
-      this.stationLayoutContainer.addChild(track); // stationLayoutContainerに追加
-    });
-
-    // 信号機 (プレースホルダー)
-    const signal1 = new Graphics();
-    signal1.fill(0xFF0000);
-    signal1.rect(20, 210, 10, 30);
-    this.stationLayoutContainer.addChild(signal1); // stationLayoutContainerに追加
-
-    const signal2 = new Graphics();
-    signal2.fill(0xFF0000);
-    signal2.rect(20, 360, 10, 30);
-    this.stationLayoutContainer.addChild(signal2); // stationLayoutContainerに追加
-
-    // 分岐器 (プレースホルダー)
-    const switch1 = new Graphics();
-    switch1.stroke({ width: 5, color: 0x00FF00 });
-    switch1.moveTo(300, 225);
-    switch1.lineTo(350, 200); // 仮の分岐
-    this.stationLayoutContainer.addChild(switch1); // stationLayoutContainerに追加
-    console.log("PixiRenderer: Station layout drawn.");
+    // 画面全体を覆う大きなマゼンタ色の四角形を描画
+    const fullScreenRect = new Graphics();
+    fullScreenRect.rect(0, 0, this.width, this.height); // 画面全体 (rectを先に呼び出す)
+    fullScreenRect.fill(0xFF00FF); // マゼンタ色
+    this.stationLayoutContainer.addChild(fullScreenRect);
+    console.log("PixiRenderer: Full screen magenta rectangle drawn.");
 
     // 明示的にレンダリングを呼び出す
     if (this.app) {

@@ -1,3 +1,4 @@
+
 import './style.css';
 import { PixiRenderer } from './renderer/PixiRenderer';
 import { Station } from './game/Station';
@@ -12,7 +13,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 const gameContainer = document.querySelector<HTMLDivElement>('#game-container');
 
 let renderer: PixiRenderer;
-let station: Station;
+let station: Station; // Stationはまだ必要なので残す
 
 async function initGame() {
   console.log("main.ts: initGame called.");
@@ -20,8 +21,8 @@ async function initGame() {
     renderer = new PixiRenderer(window.innerWidth, window.innerHeight);
     await renderer.init(gameContainer);
 
-    station = new Station();
-    renderer.drawStationLayout(station); // 駅のレイアウトは一度だけ描画
+    station = new Station(); // Stationはまだ必要なので残す
+    renderer.drawStationLayout(); // 引数を削除
 
     console.log("main.ts: Static station layout drawn.");
   } else {
