@@ -1,5 +1,7 @@
 import './style.css';
 import { PixiRenderer } from './renderer/PixiRenderer';
+import { Station } from './game/Station';
+import { Train } from './game/Train';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div id="game-container"></div>
@@ -8,33 +10,56 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 const gameContainer = document.querySelector<HTMLDivElement>('#game-container');
 
 let renderer: PixiRenderer;
-let squareX: number; // 四角形のX座標
-const squareSize = 100; // 四角形のサイズ
-const squareSpeed = 100; // 四角形の移動速度 (pixels/second)
-let direction = -1; // -1: 左, 1: 右
-let lastTime = 0;
+let station: Station;
+const trains: Train[] = []; // 有効にする
+let lastTime = 0; // 有効にする
 
-async function gameLoop(time: number) {
+async function gameLoop(time: number) { // 有効にする
+  console.log("main.ts: gameLoop started.");
   if (!lastTime) lastTime = time;
   const deltaTime = (time - lastTime) / 1000; // 秒単位
   lastTime = time;
 
-  // 四角形の位置を更新
-  squareX += squareSpeed * direction * deltaTime;
+  // 列車の更新
+  for (let i = trains.length - 1; i >= 0; i--) {
+    const train = trains[i];
+    const currentSegment = station.getSegment(train.currentSegmentId);
 
-  // 画面の端に到達したら方向を反転
-  if (squareX <= 0 || squareX + squareSize >= window.innerWidth) {
-    direction *= -1; // 方向を反転
-    // 画面外に出ないように位置を調整
-    if (squareX < 0) squareX = 0;
-    if (squareX + squareSize > window.innerWidth) squareX = window.innerWidth - squareSize;
+    if (currentSegment) {
+      const movedToNextSegment = train.update(deltaTime, currentSegment.length);
+
+      if (movedToNextSegment) {
+        // 次のセグメントへ移動
+        if (currentSegment.nextSegments.length > 0) {
+          const nextSegmentId = currentSegment.nextSegments[0]; // とりあえず最初のセグメントへ
+          const nextSegment = station.getSegment(nextSegmentId);
+          if (nextSegment) {
+            train.currentSegmentId = nextSegmentId;
+            train.positionOnSegment = 0; // 新しいセグメントの開始位置
+          } else {
+            // 次のセグメントが見つからない場合、列車を削除
+            trains.splice(i, 1);
+            console.log(`main.ts: Train ${train.id} removed (next segment not found).`);
+          }
+        } else {
+          // 次のセグメントがない場合（駅の出口）、列車を削除
+          trains.splice(i, 1);
+          console.log(`main.ts: Train ${train.id} removed (end of line).`);
+        }
+      }
+    } else {
+      // 現在のセグメントが見つからない場合、列車を削除
+      trains.splice(i, 1);
+      console.log(`main.ts: Train ${train.id} removed (current segment not found).`);
+    }
   }
 
-  // 描画をクリアして再描画
-  renderer.clearLayout();
-  renderer.drawMovingSquare(squareX, window.innerHeight / 2 - squareSize / 2, squareSize);
+  // 描画の更新
+  renderer.clearTrains(); // 列車コンテナのみをクリア
+  renderer.drawTrains(trains, station); // 列車を描画
 
   requestAnimationFrame(gameLoop);
+  console.log("main.ts: gameLoop finished.");
 }
 
 async function initGame() {
@@ -43,10 +68,14 @@ async function initGame() {
     renderer = new PixiRenderer(window.innerWidth, window.innerHeight);
     await renderer.init(gameContainer);
 
-    // 四角形の初期位置を設定 (右端から開始)
-    squareX = window.innerWidth - squareSize;
+    station = new Station();
+    renderer.drawStationLayout(station); // 駅のレイアウトは一度だけ描画
 
-    requestAnimationFrame(gameLoop);
+    // 最初の列車を生成
+    trains.push(new Train('train-1', 'track1', 50)); // segment1をtrack1に修正
+    console.log("main.ts: Initial train created.", trains[0]);
+
+    requestAnimationFrame(gameLoop); // ゲームループを有効にする
     console.log("main.ts: Game loop started.");
   } else {
     console.error('main.ts: Game container not found');

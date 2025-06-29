@@ -1,15 +1,20 @@
+
 import { Application, Graphics, Container } from 'pixi.js';
+import { Station } from '../game/Station'; // 再追加
+import { Train } from '../game/Train'; // 再追加
 
 export class PixiRenderer {
   private app: Application | null = null;
   private width: number;
   private height: number;
-  private stationLayoutContainer: Container; // 新しいコンテナ
+  private trainContainer: Container; // 初期化を元に戻す
+  private stationLayoutContainer: Container; // 初期化を元に戻す
 
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.stationLayoutContainer = new Container(); // 初期化
+    this.trainContainer = new Container(); // 初期化を元に戻す
+    this.stationLayoutContainer = new Container(); // 初期化を元に戻す
     console.log("PixiRenderer: Constructor called.");
   }
 
@@ -36,6 +41,7 @@ export class PixiRenderer {
       console.log("PixiRenderer: PixiJS rendering loop started.");
 
       this.app.stage.addChild(this.stationLayoutContainer); // ステージに駅レイアウトコンテナを追加
+      this.app.stage.addChild(this.trainContainer); // ステージに列車コンテナを追加 (駅レイアウトの上に描画されるように)
 
       this.resize();
       window.addEventListener('resize', this.resize.bind(this));
@@ -56,22 +62,72 @@ export class PixiRenderer {
     }
   }
 
-  public clearLayout() {
-    this.stationLayoutContainer.removeChildren();
-    console.log("PixiRenderer: stationLayoutContainer cleared.");
+  // clearTrainsを有効にする
+  public clearTrains() {
+    this.trainContainer.removeChildren();
+    console.log("PixiRenderer: trainContainer cleared.");
   }
 
-  public drawMovingSquare(x: number, y: number, size: number) {
-    console.log("PixiRenderer: drawMovingSquare method called.");
+  public drawStationLayout(station: Station) { // station: Station 引数を再追加
+    console.log("PixiRenderer: drawStationLayout method called.");
     if (!this.app) {
-      console.error("PixiRenderer: Cannot draw moving square: PixiJS Application not initialized.");
+      console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
       return;
     }
 
-    const square = new Graphics();
-    square.rect(x, y, size, size); // 位置とサイズを引数から取得
-    square.fill(0xFF00FF); // マゼンタ色
-    this.stationLayoutContainer.addChild(square);
-    console.log(`PixiRenderer: Moving square drawn at x=${x}, y=${y}.`);
+    this.stationLayoutContainer.removeChildren(); // 既存のレイアウトをクリア
+    console.log("PixiRenderer: stationLayoutContainer cleared.");
+
+    // 駅のホーム (例: 1つのホーム)
+    const platform = new Graphics();
+    platform.rect(50, 200, 500, 50); // x, y, width, height
+    platform.fill(0xFFD700); // 金色
+    this.stationLayoutContainer.addChild(platform); // stationLayoutContainerに追加
+
+    // 線路 (Stationクラスから取得)
+    station.trackSegments.forEach(segment => {
+      const track = new Graphics();
+      track.moveTo(segment.start.x, segment.start.y);
+      track.lineTo(segment.end.x, segment.end.y);
+      track.stroke({ width: 5, color: 0x8B4513 }); // 茶色
+      this.stationLayoutContainer.addChild(track); // stationLayoutContainerに追加
+    });
+
+    console.log("PixiRenderer: Minimal station layout drawn from data.");
+
+    // 明示的にレンダリングを呼び出す
+    if (this.app) {
+      this.app.render();
+      console.log("PixiRenderer: Explicit render called after drawing station layout.");
+    }
+  }
+
+  // drawTrainsを有効にする
+  public drawTrains(trains: Train[], station: Station) {
+    console.log("PixiRenderer: drawTrains method called.");
+    if (!this.app) {
+      console.error("PixiRenderer: Cannot draw trains: PixiJS Application not initialized.");
+      return;
+    }
+    this.trainContainer.removeChildren(); // Clear existing trains
+
+    trains.forEach(train => {
+      const segment = station.getSegment(train.currentSegmentId);
+      if (segment) {
+        const trainGraphic = new Graphics();
+        trainGraphic.rect(-50, -25, 100, 50); // 列車のサイズを大きく変更 (100x50)
+        trainGraphic.fill(0xFFFFFF); // 純粋な白に変更
+        trainGraphic.stroke({ width: 5, color: 0x000000 }); // 黒い枠線を追加
+        this.trainContainer.addChild(trainGraphic); // Add to trainContainer
+
+        // Calculate train position
+        const x = segment.start.x + (segment.end.x - segment.start.x) * train.positionOnSegment;
+        const y = segment.start.y + (segment.end.y - segment.start.y) * train.positionOnSegment;
+
+        trainGraphic.position.set(x, y);
+        console.log(`PixiRenderer: Train ${train.id} drawn at x=${x}, y=${y}.`); // 列車の座標をログに出力
+      }
+    });
+    console.log(`PixiRenderer: ${trains.length} trains drawn.`);
   }
 }

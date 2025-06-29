@@ -1,3 +1,4 @@
+
 export interface TrackSegment {
   id: string;
   start: { x: number; y: number };
@@ -15,27 +16,17 @@ export class Station {
   }
 
   private createInitialLayout() {
-    // 仮のレイアウト: シンプルな直線線路
-    // Canvasの幅が606pxなので、座標を調整
+    // シンプルなレイアウト: 1本の線路と1つのホーム
     const segment1: TrackSegment = {
-      id: 'segment1',
-      start: { x: 50, y: 225 },
-      end: { x: 300, y: 225 },
-      length: 250,
-      nextSegments: ['segment2'],
-      occupiedBy: null,
-    };
-    const segment2: TrackSegment = {
-      id: 'segment2',
-      start: { x: 300, y: 225 },
-      end: { x: 550, y: 225 },
-      length: 250,
-      nextSegments: [], // 駅の出口
+      id: 'track1',
+      start: { x: 0, y: 225 },
+      end: { x: 600, y: 225 },
+      length: 600,
+      nextSegments: [],
       occupiedBy: null,
     };
 
     this.trackSegments.set(segment1.id, segment1);
-    this.trackSegments.set(segment2.id, segment2);
   }
 
   public getSegment(id: string): TrackSegment | undefined {
