@@ -9,7 +9,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 const gameContainer = document.querySelector<HTMLDivElement>('#game-container');
 
 let renderer: PixiRenderer;
-let station: Station; // 再追加
 
 async function initGame() {
   console.log("main.ts: initGame called.");
@@ -17,10 +16,19 @@ async function initGame() {
     renderer = new PixiRenderer(window.innerWidth, window.innerHeight);
     await renderer.init(gameContainer);
 
-    station = new Station('simple'); // simpleレイアウトをロード
-    renderer.drawStationLayout(station); // 駅のレイアウトを描画
+    // stationLayoutContainerをここでクリア
+    renderer.stationLayoutContainer.removeChildren();
+    console.log("main.ts: stationLayoutContainer cleared.");
 
-    console.log("main.ts: Static station layout drawn.");
+    // 1つ目の駅を描画
+    let station1 = new Station('simple', 50, 100, 500, 50); // ホームx, ホームy, ホーム幅, ホーム高さ
+    renderer.drawStationLayout(station1);
+
+    // 2つ目の駅を描画
+    let station2 = new Station('simple', 50, 400, 500, 50); // ホームx, ホームy, ホーム幅, ホーム高さ
+    renderer.drawStationLayout(station2);
+
+    console.log("main.ts: Multiple static station layouts drawn.");
   } else {
     console.error('main.ts: Game container not found');
   }
