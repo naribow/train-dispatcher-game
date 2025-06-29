@@ -1,3 +1,4 @@
+
 import './style.css';
 import { Application, Graphics } from 'pixi.js';
 
@@ -41,8 +42,8 @@ async function initPixi() {
 
     console.log(`Red square position: x=${squareX}, y=${squareY}, size=${squareSize}`);
 
+    square.rect(squareX, squareY, squareSize, squareSize); // rectを先に呼び出す
     square.fill(0xFF0000); // Red
-    square.rect(squareX, squareY, squareSize, squareSize);
     app.stage.addChild(square);
     console.log("PixiJS Stage children:", app.stage.children);
 
