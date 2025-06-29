@@ -17,7 +17,7 @@ export class PixiRenderer {
   }
 
   public init(parentElement: HTMLElement) {
-    parentElement.appendChild(this.app.view as HTMLCanvasElement);
+    parentElement.appendChild(this.app.canvas);
     this.resize();
     window.addEventListener('resize', this.resize.bind(this));
   }
