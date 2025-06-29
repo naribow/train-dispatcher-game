@@ -1,3 +1,4 @@
+
 import './style.css';
 import { PixiRenderer } from './renderer/PixiRenderer';
 import { Station } from './game/Station'; // 再追加
@@ -13,7 +14,7 @@ let renderer: PixiRenderer;
 async function initGame() {
   console.log("main.ts: initGame called.");
   if (gameContainer) {
-    renderer = new PixiRenderer(window.innerWidth, window.innerHeight);
+    renderer = new PixiRenderer(); // 引数を削除
     await renderer.init(gameContainer);
 
     // stationLayoutContainerをここでクリア

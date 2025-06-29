@@ -1,4 +1,3 @@
-
 // src/game/Drawable.ts
 
 import { Graphics } from 'pixi.js';

@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Platform } from '../game/Platform';
@@ -6,16 +5,12 @@ import { Rail } from '../game/Rail';
 
 export class PixiRenderer {
   private app: Application | null = null;
-  private width: number;
-  private height: number;
-  public stationLayoutContainer: Container; // publicに変更
+  public stationLayoutContainer: Container;
 
   private readonly GAME_WIDTH = 1280;
   private readonly GAME_HEIGHT = 720;
 
-  constructor(width: number, height: number) {
-    this.width = width;
-    this.height = height;
+  constructor() { // 引数を削除
     this.stationLayoutContainer = new Container();
     console.log("PixiRenderer: Constructor called.");
   }
@@ -88,19 +83,17 @@ export class PixiRenderer {
     // console.log("PixiRenderer: stationLayoutContainer cleared.");
 
     // ホームの描画
-    station.platforms.forEach(platform => {
+    station.platforms.forEach((platform: Platform) => {
       const platformGraphic = new Graphics();
       platform.draw(platformGraphic);
       this.stationLayoutContainer.addChild(platformGraphic);
-      console.log(`PixiRenderer: Platform drawn at x=${platform.x}, y=${platform.y}, width=${platform.width}, height=${platform.height}`);
     });
 
     // 線路の描画
-    station.rails.forEach(rail => {
+    station.rails.forEach((rail: Rail) => {
       const railGraphic = new Graphics();
       rail.draw(railGraphic);
       this.stationLayoutContainer.addChild(railGraphic);
-      console.log(`PixiRenderer: Rail drawn from (${rail.start.x}, ${rail.start.y}) to (${rail.end.x}, ${rail.end.y})`);
     });
 
     console.log("PixiRenderer: Simple station layout drawn from data.");
