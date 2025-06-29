@@ -1,4 +1,3 @@
-
 // src/game/TrackSegment.ts
 
 import { Graphics } from 'pixi.js';
@@ -10,7 +9,7 @@ export interface TrackSegment {
   length: number;
   nextSegments: string[]; // 次のセグメントのID
   occupiedBy: string | null; // 列車ID、またはnull
-  draw(graphics: Graphics): void; // 描画メソッドを追加
+  draw: (graphics: Graphics) => void; // 描画メソッドをアロー関数として定義
 }
 
 export class StraightTrack implements TrackSegment {
@@ -29,10 +28,10 @@ export class StraightTrack implements TrackSegment {
     this.nextSegments = nextSegments;
   }
 
-  draw(graphics: Graphics): void {
+  draw = (graphics: Graphics): void => {
     graphics.moveTo(this.start.x, this.start.y);
     graphics.lineTo(this.end.x, this.end.y);
-  }
+  };
 }
 
 export class CurvedTrack implements TrackSegment {
@@ -43,7 +42,6 @@ export class CurvedTrack implements TrackSegment {
   public nextSegments: string[];
   public occupiedBy: string | null = null;
 
-  // カーブの制御点など、カーブ描画に必要なプロパティを追加
   private controlPoint: { x: number; y: number };
 
   constructor(id: string, start: { x: number; y: number }, end: { x: number; y: number }, controlPoint: { x: number; y: number }, nextSegments: string[] = []) {
@@ -51,16 +49,14 @@ export class CurvedTrack implements TrackSegment {
     this.start = start;
     this.end = end;
     this.controlPoint = controlPoint;
-    // カーブの長さ計算は複雑なので、ここでは簡略化または固定値
     this.length = 100; // 仮の長さ
     this.nextSegments = nextSegments;
   }
 
-  draw(graphics: Graphics): void {
-    // ベジェ曲線でカーブを描画
+  draw = (graphics: Graphics): void => {
     graphics.moveTo(this.start.x, this.start.y);
     graphics.quadraticCurveTo(this.controlPoint.x, this.controlPoint.y, this.end.x, this.end.y);
-  }
+  };
 }
 
 export class SwitchTrack implements TrackSegment {
@@ -82,13 +78,11 @@ export class SwitchTrack implements TrackSegment {
     this.nextSegments = nextSegments;
   }
 
-  draw(graphics: Graphics): void {
-    // メインの進路
+  draw = (graphics: Graphics): void => {
     graphics.moveTo(this.start.x, this.start.y);
     graphics.lineTo(this.end.x, this.end.y);
 
-    // 分岐側の進路
     graphics.moveTo(this.start.x, this.start.y);
     graphics.lineTo(this.divergentEnd.x, this.divergentEnd.y);
-  }
+  };
 }

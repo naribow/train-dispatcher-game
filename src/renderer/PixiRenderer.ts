@@ -1,24 +1,23 @@
 import { Application, Graphics, Container } from 'pixi.js';
-import { Station } from '../game/Station'; // 再追加
-import { Train } from '../game/Train'; // 再追加
-import { StraightTrack, CurvedTrack, SwitchTrack, TrackSegment } from '../game/TrackSegment'; // TrackSegmentをインポート
+import { Station } from '../game/Station';
+import { Train } from '../game/Train';
+import { StraightTrack, CurvedTrack, SwitchTrack, TrackSegment } from '../game/TrackSegment';
 
 export class PixiRenderer {
   private app: Application | null = null;
   private width: number;
   private height: number;
-  private trainContainer: Container; // 初期化を元に戻す
-  private stationLayoutContainer: Container; // 初期化を元に戻す
+  private trainContainer: Container;
+  private stationLayoutContainer: Container;
 
-  // 固定アスペクト比の基準となるサイズ
   private readonly GAME_WIDTH = 1280;
-  private readonly GAME_HEIGHT = 720; // 16:9のアスペクト比
+  private readonly GAME_HEIGHT = 720;
 
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.trainContainer = new Container(); // 初期化を元に戻す
-    this.stationLayoutContainer = new Container(); // 初期化を元に戻す
+    this.trainContainer = new Container();
+    this.stationLayoutContainer = new Container();
     console.log("PixiRenderer: Constructor called.");
   }
 
@@ -26,8 +25,8 @@ export class PixiRenderer {
     console.log("PixiRenderer: init method called with parentElement:", parentElement);
     try {
       const canvas = document.createElement('canvas');
-      canvas.width = this.GAME_WIDTH; // 基準となるゲームの幅
-      canvas.height = this.GAME_HEIGHT; // 基準となるゲームの高さ
+      canvas.width = this.GAME_WIDTH;
+      canvas.height = this.GAME_HEIGHT;
       parentElement.appendChild(canvas);
       console.log("PixiRenderer: Canvas created and appended.", canvas);
 
@@ -41,11 +40,11 @@ export class PixiRenderer {
       });
       console.log("PixiRenderer: PixiJS Application initialized.", this.app);
 
-      this.app.start(); // Start the rendering loop
+      this.app.start();
       console.log("PixiRenderer: PixiJS rendering loop started.");
 
-      this.app.stage.addChild(this.stationLayoutContainer); // ステージに駅レイアウトコンテナを追加
-      this.app.stage.addChild(this.trainContainer); // ステージに列車コンテナを追加 (駅レイアウトの上に描画されるように)
+      this.app.stage.addChild(this.stationLayoutContainer);
+      this.app.stage.addChild(this.trainContainer);
 
       this.resize();
       window.addEventListener('resize', this.resize.bind(this));
@@ -67,55 +66,50 @@ export class PixiRenderer {
       const newWidth = this.GAME_WIDTH * scale;
       const newHeight = this.GAME_HEIGHT * scale;
 
-      // Canvasのスタイルを調整して中央に配置
       this.app.canvas.style.width = `${newWidth}px`;
       this.app.canvas.style.height = `${newHeight}px`;
       this.app.canvas.style.position = 'absolute';
       this.app.canvas.style.left = `${(currentWidth - newWidth) / 2}px`;
       this.app.canvas.style.top = `${(currentHeight - newHeight) / 2}px`;
 
-      // PixiJSのレンダラーサイズはゲームの論理サイズに設定
       this.app.renderer.resize(this.GAME_WIDTH, this.GAME_HEIGHT);
 
       console.log(`PixiRenderer: Resized to ${newWidth}x${newHeight} (scaled from ${this.GAME_WIDTH}x${this.GAME_HEIGHT})`);
     }
   }
 
-  // clearTrainsを有効にする
   public clearTrains() {
     this.trainContainer.removeChildren();
     console.log("PixiRenderer: trainContainer cleared.");
   }
 
-  public drawStationLayout(station: Station) { // station: Station 引数を再追加
+  public drawStationLayout(station: Station) {
     console.log("PixiRenderer: drawStationLayout method called.");
     if (!this.app) {
       console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
       return;
     }
 
-    this.stationLayoutContainer.removeChildren(); // 既存のレイアウトをクリア
+    this.stationLayoutContainer.removeChildren();
     console.log("PixiRenderer: stationLayoutContainer cleared.");
 
     // ホームの描画
-    // platform1
     const platform1Graphic = new Graphics();
-    platform1Graphic.rect(100, 200, 1080, 50); // x, y, width, height
-    platform1Graphic.fill(0xFFD700); // 金色
+    platform1Graphic.rect(100, 200, 1080, 50);
+    platform1Graphic.fill(0xFFD700);
     this.stationLayoutContainer.addChild(platform1Graphic);
 
-    // platform2
     const platform2Graphic = new Graphics();
-    platform2Graphic.rect(100, 500, 1080, 50); // x, y, width, height
-    platform2Graphic.fill(0xFFD700); // 金色
+    platform2Graphic.rect(100, 500, 1080, 50);
+    platform2Graphic.fill(0xFFD700);
     this.stationLayoutContainer.addChild(platform2Graphic);
 
     // 線路の描画 (Stationクラスから取得)
     station.trackSegments.forEach(segment => {
       const track = new Graphics();
-      track.stroke({ width: 5, color: 0x8B4513 }); // 茶色
-      segment.draw(track); // TrackSegmentのdrawメソッドを呼び出す
-      this.stationLayoutContainer.addChild(track); // stationLayoutContainerに追加
+      track.stroke({ width: 5, color: 0x000000 }); // 線路の色を純粋な黒に変更
+      segment.draw(track);
+      this.stationLayoutContainer.addChild(track);
     });
 
     // 信号機 (プレースホルダー)
@@ -130,11 +124,32 @@ export class PixiRenderer {
     this.stationLayoutContainer.addChild(signal2);
 
     // 分岐器 (プレースホルダー)
-    // SwitchTrackはdrawメソッドで分岐を描画するので、ここでは個別に描画しない
+    const switch1 = new Graphics();
+    switch1.moveTo(250, 250);
+    switch1.lineTo(200, 200);
+    switch1.stroke({ width: 5, color: 0x000000 }); // 黒
+    this.stationLayoutContainer.addChild(switch1);
+
+    const switch2 = new Graphics();
+    switch2.moveTo(250, 450);
+    switch2.lineTo(200, 500);
+    switch2.stroke({ width: 5, color: 0x000000 }); // 黒
+    this.stationLayoutContainer.addChild(switch2);
+
+    const switch3 = new Graphics();
+    switch3.moveTo(300, 250);
+    switch3.lineTo(350, 100);
+    switch3.stroke({ width: 5, color: 0x000000 }); // 黒
+    this.stationLayoutContainer.addChild(switch3);
+
+    const switch4 = new Graphics();
+    switch4.moveTo(300, 450);
+    switch4.lineTo(350, 600);
+    switch4.stroke({ width: 5, color: 0x000000 }); // 黒
+    this.stationLayoutContainer.addChild(switch4);
 
     console.log("PixiRenderer: Complex station layout drawn from data.");
 
-    // 明示的にレンダリングを呼び出す
     if (this.app) {
       this.app.render();
       console.log("PixiRenderer: Explicit render called after drawing station layout.");
@@ -147,23 +162,22 @@ export class PixiRenderer {
       console.error("PixiRenderer: Cannot draw trains: PixiJS Application not initialized.");
       return;
     }
-    this.trainContainer.removeChildren(); // Clear existing trains
+    this.trainContainer.removeChildren();
 
     trains.forEach(train => {
       const segment = station.getSegment(train.currentSegmentId);
       if (segment) {
         const trainGraphic = new Graphics();
-        trainGraphic.rect(-50, -25, 100, 50); // 列車のサイズを大きく変更 (100x50)
-        trainGraphic.fill(0xFFFFFF); // 純粋な白に変更
-        trainGraphic.stroke({ width: 5, color: 0x000000 }); // 黒い枠線を追加
-        this.trainContainer.addChild(trainGraphic); // Add to trainContainer
+        trainGraphic.rect(-50, -25, 100, 50);
+        trainGraphic.fill(0xFFFFFF);
+        trainGraphic.stroke({ width: 5, color: 0x000000 });
+        this.trainContainer.addChild(trainGraphic);
 
-        // Calculate train position
         const x = segment.start.x + (segment.end.x - segment.start.x) * train.positionOnSegment;
         const y = segment.start.y + (segment.end.y - segment.start.y) * train.positionOnSegment;
 
         trainGraphic.position.set(x, y);
-        console.log(`PixiRenderer: Train ${train.id} drawn at x=${x}, y=${y}.`); // 列車の座標をログに出力
+        console.log(`PixiRenderer: Train ${train.id} drawn at x=${x}, y=${y}.`);
       }
     });
     console.log(`PixiRenderer: ${trains.length} trains drawn.`);
