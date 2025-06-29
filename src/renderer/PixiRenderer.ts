@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Train } from '../game/Train';
@@ -33,7 +32,7 @@ export class PixiRenderer {
 
       // Await the init method with options for the application
       await this.app.init({
-        view: canvas, // Use 'view' for the canvas element in v8
+        canvas: canvas, // Use 'canvas' instead of 'view' for the canvas element in v8
         backgroundColor: 0x1099bb, // Blue background
         width: this.width,
         height: this.height,
@@ -46,17 +45,6 @@ export class PixiRenderer {
         this.resize();
         window.addEventListener('resize', this.resize.bind(this));
         console.log("PixiRenderer: Stage setup complete.");
-
-        // Debugging: Draw a red square in the center
-        const debugSquare = new Graphics();
-        debugSquare.fill(0xFF0000); // Red
-        debugSquare.rect(this.width / 2 - 25, this.height / 2 - 25, 50, 50);
-        this.app.stage.addChild(debugSquare);
-        console.log("PixiRenderer: Debug square added to stage.");
-
-        // Explicitly render after adding debug square
-        this.app.render();
-        console.log("PixiRenderer: Explicit render called after adding debug square.");
 
       } else {
         console.error("PixiRenderer: Failed to initialize PixiJS Application or its canvas property is missing after init().");

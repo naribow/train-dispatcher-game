@@ -1,4 +1,3 @@
-
 import './style.css';
 import { PixiRenderer } from './renderer/PixiRenderer';
 import { Station } from './game/Station';
@@ -59,7 +58,8 @@ async function gameLoop(time: number) {
   }
 
   // 描画の更新
-  renderer.clearStage(); // ステージをクリア
+  renderer.clearStage(); // 列車コンテナのみをクリア
+  renderer.drawStationLayout(station); // 駅のレイアウトを毎フレーム描画
   renderer.drawTrains(trains, station); // 列車を描画
 
   requestAnimationFrame(gameLoop);
@@ -73,7 +73,7 @@ async function initGame() {
     await renderer.init(gameContainer);
 
     station = new Station();
-    renderer.drawStationLayout(station); // 駅のレイアウトは一度だけ描画
+    // renderer.drawStationLayout(station); // 駅のレイアウトは一度だけ描画 (コメントアウト)
 
     // 最初の列車を生成
     trains.push(new Train('train-1', 'segment1', 50));
