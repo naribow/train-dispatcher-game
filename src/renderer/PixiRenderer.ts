@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Train } from '../game/Train';
@@ -16,19 +15,27 @@ export class PixiRenderer {
   }
 
   public async init(parentElement: HTMLElement) {
-    this.app = new Application({
-      width: this.width,
-      height: this.height,
-      backgroundColor: 0x1099bb, // 青色の背景
-    });
+    try {
+      this.app = new Application({
+        width: this.width,
+        height: this.height,
+        backgroundColor: 0x1099bb, // 青色の背景
+        forceCanvas: true, // Canvasレンダリングを強制
+      });
 
-    if (this.app) {
-      parentElement.appendChild(this.app.canvas);
-      this.app.stage.addChild(this.trainContainer);
-      this.resize();
-      window.addEventListener('resize', this.resize.bind(this));
-    } else {
-      console.error("Failed to initialize PixiJS Application.");
+      if (this.app && this.app.canvas) {
+        parentElement.appendChild(this.app.canvas);
+        this.app.stage.addChild(this.trainContainer);
+        this.resize();
+        window.addEventListener('resize', this.resize.bind(this));
+      } else {
+        console.error("Failed to initialize PixiJS Application or its canvas property is missing.");
+        if (this.app) {
+          console.error("this.app exists, but this.app.canvas is:", this.app.canvas);
+        }
+      }
+    } catch (error) {
+      console.error("Error during PixiJS Application initialization:", error);
     }
   }
 
@@ -97,6 +104,10 @@ export class PixiRenderer {
   }
 
   public drawTrains(trains: Train[], station: Station) {
+    if (!this.app) {
+      console.error("Cannot draw trains: PixiJS Application not initialized.");
+      return;
+    }
     this.trainContainer.removeChildren(); // 既存の列車をクリア
 
     trains.forEach(train => {
