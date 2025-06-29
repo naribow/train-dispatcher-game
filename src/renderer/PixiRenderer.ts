@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 
 export class PixiRenderer {
@@ -57,27 +56,22 @@ export class PixiRenderer {
     }
   }
 
-  public drawStationLayout() { // station: Station 引数を削除
-    console.log("PixiRenderer: drawStationLayout method called.");
+  public clearLayout() {
+    this.stationLayoutContainer.removeChildren();
+    console.log("PixiRenderer: stationLayoutContainer cleared.");
+  }
+
+  public drawMovingSquare(x: number, y: number, size: number) {
+    console.log("PixiRenderer: drawMovingSquare method called.");
     if (!this.app) {
-      console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
+      console.error("PixiRenderer: Cannot draw moving square: PixiJS Application not initialized.");
       return;
     }
 
-    this.stationLayoutContainer.removeChildren(); // 既存のレイアウトをクリア
-    console.log("PixiRenderer: stationLayoutContainer cleared.");
-
-    // 画面全体を覆う大きなマゼンタ色の四角形を描画
-    const fullScreenRect = new Graphics();
-    fullScreenRect.rect(0, 0, this.width, this.height); // 画面全体 (rectを先に呼び出す)
-    fullScreenRect.fill(0xFF00FF); // マゼンタ色
-    this.stationLayoutContainer.addChild(fullScreenRect);
-    console.log("PixiRenderer: Full screen magenta rectangle drawn.");
-
-    // 明示的にレンダリングを呼び出す
-    if (this.app) {
-      this.app.render();
-      console.log("PixiRenderer: Explicit render called after drawing station layout.");
-    }
+    const square = new Graphics();
+    square.rect(x, y, size, size); // 位置とサイズを引数から取得
+    square.fill(0xFF00FF); // マゼンタ色
+    this.stationLayoutContainer.addChild(square);
+    console.log(`PixiRenderer: Moving square drawn at x=${x}, y=${y}.`);
   }
 }
