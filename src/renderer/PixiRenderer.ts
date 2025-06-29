@@ -1,6 +1,6 @@
 
 import { Application, Graphics, Container } from 'pixi.js';
-import { Station, TrackSegment } from '../game/Station';
+import { Station } from '../game/Station';
 import { Train } from '../game/Train';
 
 export class PixiRenderer {
