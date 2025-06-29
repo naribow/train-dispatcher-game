@@ -20,7 +20,7 @@ export class PixiRenderer {
         width: this.width,
         height: this.height,
         backgroundColor: 0x1099bb, // 青色の背景
-        forceCanvas: true, // Canvasレンダリングを強制
+        
       });
 
       if (this.app && this.app.canvas) {
