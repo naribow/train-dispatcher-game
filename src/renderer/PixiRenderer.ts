@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Train } from '../game/Train';
@@ -28,14 +27,16 @@ export class PixiRenderer {
       parentElement.appendChild(canvas);
       console.log("PixiRenderer: Canvas created and appended.", canvas);
 
-      // Pass the canvas to the Application constructor
-      this.app = new Application({
+      // Create Application without options in constructor for v8
+      this.app = new Application();
+
+      // Await the init method with options for the application
+      await this.app.init({
         view: canvas, // Use 'view' for the canvas element in v8
         backgroundColor: 0x1099bb, // Blue background
+        width: this.width,
+        height: this.height,
       });
-
-      // Await the init method for the application
-      await this.app.init(); // This is important for v8
       console.log("PixiRenderer: PixiJS Application initialized.", this.app);
 
       if (this.app && this.app.canvas) { // Check this.app.canvas after init()
@@ -44,6 +45,14 @@ export class PixiRenderer {
         this.resize();
         window.addEventListener('resize', this.resize.bind(this));
         console.log("PixiRenderer: Stage setup complete.");
+
+        // Debugging: Draw a red square in the center
+        const debugSquare = new Graphics();
+        debugSquare.fill(0xFF0000); // Red
+        debugSquare.rect(this.width / 2 - 25, this.height / 2 - 25, 50, 50);
+        this.app.stage.addChild(debugSquare);
+        console.log("PixiRenderer: Debug square drawn.");
+
       } else {
         console.error("PixiRenderer: Failed to initialize PixiJS Application or its canvas property is missing after init().");
         if (this.app) {
