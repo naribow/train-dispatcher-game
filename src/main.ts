@@ -1,4 +1,3 @@
-
 import './style.css';
 import { PixiRenderer } from './renderer/PixiRenderer';
 import { Station } from './game/Station';
@@ -42,27 +41,30 @@ async function gameLoop(time: number) {
           } else {
             // 次のセグメントが見つからない場合、列車を削除
             trains.splice(i, 1);
+            console.log(`main.ts: Train ${train.id} removed (next segment not found).`);
           }
         } else {
           // 次のセグメントがない場合（駅の出口）、列車を削除
           trains.splice(i, 1);
+          console.log(`main.ts: Train ${train.id} removed (end of line).`);
         }
       }
     } else {
       // 現在のセグメントが見つからない場合、列車を削除
       trains.splice(i, 1);
+      console.log(`main.ts: Train ${train.id} removed (current segment not found).`);
     }
   }
 
   // 描画の更新
   renderer.clearStage(); // ステージをクリア
-  renderer.drawStationLayout(station); // 駅のレイアウトを描画
   renderer.drawTrains(trains, station); // 列車を描画
 
   requestAnimationFrame(gameLoop);
 }
 
 async function initGame() {
+  console.log("main.ts: initGame called.");
   if (gameContainer) {
     renderer = new PixiRenderer(window.innerWidth, window.innerHeight);
     await renderer.init(gameContainer);
@@ -72,10 +74,12 @@ async function initGame() {
 
     // 最初の列車を生成
     trains.push(new Train('train-1', 'segment1', 50));
+    console.log("main.ts: Initial train created.", trains[0]);
 
     requestAnimationFrame(gameLoop);
+    console.log("main.ts: Game loop started.");
   } else {
-    console.error('Game container not found');
+    console.error('main.ts: Game container not found');
   }
 }
 

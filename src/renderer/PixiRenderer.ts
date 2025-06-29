@@ -1,3 +1,4 @@
+
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Train } from '../game/Train';
@@ -14,15 +15,18 @@ export class PixiRenderer {
     this.height = height;
     this.trainContainer = new Container();
     this.stationLayoutContainer = new Container(); // 初期化
+    console.log("PixiRenderer: Constructor called.");
   }
 
   public async init(parentElement: HTMLElement) {
+    console.log("PixiRenderer: init method called with parentElement:", parentElement);
     try {
       // Explicitly create a canvas element
       const canvas = document.createElement('canvas');
       canvas.width = this.width;
       canvas.height = this.height;
       parentElement.appendChild(canvas);
+      console.log("PixiRenderer: Canvas created and appended.", canvas);
 
       // Pass the canvas to the Application constructor
       this.app = new Application({
@@ -32,43 +36,50 @@ export class PixiRenderer {
 
       // Await the init method for the application
       await this.app.init(); // This is important for v8
+      console.log("PixiRenderer: PixiJS Application initialized.", this.app);
 
       if (this.app && this.app.canvas) { // Check this.app.canvas after init()
         this.app.stage.addChild(this.stationLayoutContainer); // ステージに駅レイアウトコンテナを追加
         this.app.stage.addChild(this.trainContainer); // ステージに列車コンテナを追加
         this.resize();
         window.addEventListener('resize', this.resize.bind(this));
+        console.log("PixiRenderer: Stage setup complete.");
       } else {
-        console.error("Failed to initialize PixiJS Application or its canvas property is missing after init().");
+        console.error("PixiRenderer: Failed to initialize PixiJS Application or its canvas property is missing after init().");
         if (this.app) {
-          console.error("this.app exists, but this.app.canvas is:", this.app.canvas);
+          console.error("PixiRenderer: this.app exists, but this.app.canvas is:", this.app.canvas);
         }
       }
     } catch (error) {
-      console.error("Error during PixiJS Application initialization:", error);
+      console.error("PixiRenderer: Error during PixiJS Application initialization:", error);
     }
   }
 
   private resize() {
+    console.log("PixiRenderer: resize method called.");
     if (this.app) {
       this.width = window.innerWidth;
       this.height = window.innerHeight;
       this.app.renderer.resize(this.width, this.height);
+      console.log(`PixiRenderer: Resized to ${this.width}x${this.height}`);
     }
   }
 
   public clearStage() {
     // ステージ全体をクリアするのではなく、列車コンテナのみをクリア
     this.trainContainer.removeChildren();
+    console.log("PixiRenderer: trainContainer cleared.");
   }
 
   public drawStationLayout(station: Station) {
+    console.log("PixiRenderer: drawStationLayout method called.");
     if (!this.app) {
-      console.error("Cannot draw layout: PixiJS Application not initialized.");
+      console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
       return;
     }
 
     this.stationLayoutContainer.removeChildren(); // 既存のレイアウトをクリア（初回描画時のみ）
+    console.log("PixiRenderer: stationLayoutContainer cleared.");
 
     // 駅のホーム (例: 2つのホーム)
     const platform1 = new Graphics();
@@ -107,11 +118,13 @@ export class PixiRenderer {
     switch1.moveTo(400, 225);
     switch1.lineTo(450, 200); // Temporary switch
     this.stationLayoutContainer.addChild(switch1); // stationLayoutContainerに追加
+    console.log("PixiRenderer: Station layout drawn.");
   }
 
   public drawTrains(trains: Train[], station: Station) {
+    console.log("PixiRenderer: drawTrains method called.");
     if (!this.app) {
-      console.error("Cannot draw trains: PixiJS Application not initialized.");
+      console.error("PixiRenderer: Cannot draw trains: PixiJS Application not initialized.");
       return;
     }
     this.trainContainer.removeChildren(); // Clear existing trains
@@ -131,5 +144,6 @@ export class PixiRenderer {
         trainGraphic.position.set(x, y);
       }
     });
+    console.log(`PixiRenderer: ${trains.length} trains drawn.`);
   }
 }
