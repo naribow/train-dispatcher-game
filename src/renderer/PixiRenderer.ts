@@ -58,13 +58,13 @@ export class PixiRenderer {
     platform1.beginFill(0xAAAAAA); // 灰色
     platform1.drawRect(50, 200, 700, 50); // x, y, width, height
     platform1.endFill();
-    this.app.stage.addChild(platform1);
+    this.app!.stage.addChild(platform1);
 
     const platform2 = new Graphics();
     platform2.beginFill(0xAAAAAA);
     platform2.drawRect(50, 350, 700, 50);
     platform2.endFill();
-    this.app.stage.addChild(platform2);
+    this.app!.stage.addChild(platform2);
 
     // 線路 (Stationクラスから取得)
     station.trackSegments.forEach(segment => {
@@ -72,7 +72,7 @@ export class PixiRenderer {
       track.lineStyle(5, 0x333333); // 濃い灰色
       track.moveTo(segment.start.x, segment.start.y);
       track.lineTo(segment.end.x, segment.end.y);
-      this.app.stage.addChild(track);
+      this.app!.stage.addChild(track);
     });
 
     // 信号機 (プレースホルダー)
@@ -80,20 +80,20 @@ export class PixiRenderer {
     signal1.beginFill(0xFF0000); // 赤色
     signal1.drawRect(20, 210, 10, 30);
     signal1.endFill();
-    this.app.stage.addChild(signal1);
+    this.app!.stage.addChild(signal1);
 
     const signal2 = new Graphics();
     signal2.beginFill(0xFF0000);
     signal2.drawRect(20, 360, 10, 30);
     signal2.endFill();
-    this.app.stage.addChild(signal2);
+    this.app!.stage.addChild(signal2);
 
     // 分岐器 (プレースホルダー)
     const switch1 = new Graphics();
     switch1.lineStyle(5, 0x333333);
     switch1.moveTo(400, 225);
     switch1.lineTo(450, 200); // 仮の分岐
-    this.app.stage.addChild(switch1);
+    this.app!.stage.addChild(switch1);
   }
 
   public drawTrains(trains: Train[], station: Station) {
