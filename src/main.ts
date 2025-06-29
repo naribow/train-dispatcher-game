@@ -44,6 +44,7 @@ async function initPixi() {
     square.fill(0xFF0000); // Red
     square.rect(squareX, squareY, squareSize, squareSize);
     app.stage.addChild(square);
+    console.log("PixiJS Stage children:", app.stage.children);
 
     // Resize listener
     window.addEventListener('resize', () => {
