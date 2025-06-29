@@ -29,6 +29,8 @@ async function initPixi() {
       height: window.innerHeight,
     });
 
+    app.start(); // Explicitly start the PixiJS rendering loop
+
     console.log(`PixiJS app.screen dimensions: ${app.screen.width}x${app.screen.height}`);
 
     // Draw a red square
