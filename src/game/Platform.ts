@@ -1,4 +1,3 @@
-
 // src/game/Platform.ts
 
 import { Graphics } from 'pixi.js';
@@ -11,7 +10,13 @@ export class Platform implements Drawable {
   public height: number;
   public color: number;
 
-  constructor(x: number, y: number, width: number, height: number, color: number) {
+  constructor(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    color: number,
+  ) {
     this.x = x;
     this.y = y;
     this.width = width;

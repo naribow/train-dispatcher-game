@@ -1,4 +1,3 @@
-
 // src/game/Rail.ts
 
 import { Graphics } from 'pixi.js';
@@ -10,7 +9,12 @@ export class Rail implements Drawable {
   public width: number;
   public color: number;
 
-  constructor(start: { x: number; y: number }, end: { x: number; y: number }, width: number, color: number) {
+  constructor(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+    width: number,
+    color: number,
+  ) {
     this.start = start;
     this.end = end;
     this.width = width;

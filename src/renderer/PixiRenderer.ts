@@ -10,19 +10,23 @@ export class PixiRenderer {
   private readonly GAME_WIDTH = 1280;
   private readonly GAME_HEIGHT = 720;
 
-  constructor() { // 引数を削除
+  constructor() {
+    // 引数を削除
     this.stationLayoutContainer = new Container();
-    console.log("PixiRenderer: Constructor called.");
+    console.log('PixiRenderer: Constructor called.');
   }
 
   public async init(parentElement: HTMLElement) {
-    console.log("PixiRenderer: init method called with parentElement:", parentElement);
+    console.log(
+      'PixiRenderer: init method called with parentElement:',
+      parentElement,
+    );
     try {
       const canvas = document.createElement('canvas');
       canvas.width = this.GAME_WIDTH;
       canvas.height = this.GAME_HEIGHT;
       parentElement.appendChild(canvas);
-      console.log("PixiRenderer: Canvas created and appended.", canvas);
+      console.log('PixiRenderer: Canvas created and appended.', canvas);
 
       this.app = new Application();
 
@@ -32,29 +36,34 @@ export class PixiRenderer {
         width: this.GAME_WIDTH,
         height: this.GAME_HEIGHT,
       });
-      console.log("PixiRenderer: PixiJS Application initialized.", this.app);
+      console.log('PixiRenderer: PixiJS Application initialized.', this.app);
 
       this.app.start();
-      console.log("PixiRenderer: PixiJS rendering loop started.");
+      console.log('PixiRenderer: PixiJS rendering loop started.');
 
       this.app.stage.addChild(this.stationLayoutContainer);
 
       this.resize();
       window.addEventListener('resize', this.resize.bind(this));
-      console.log("PixiRenderer: Stage setup complete.");
-
+      console.log('PixiRenderer: Stage setup complete.');
     } catch (error) {
-      console.error("PixiRenderer: Error during PixiJS Application initialization:", error);
+      console.error(
+        'PixiRenderer: Error during PixiJS Application initialization:',
+        error,
+      );
     }
   }
 
   private resize() {
-    console.log("PixiRenderer: resize method called.");
+    console.log('PixiRenderer: resize method called.');
     if (this.app) {
       const currentWidth = window.innerWidth;
       const currentHeight = window.innerHeight;
 
-      const scale = Math.min(currentWidth / this.GAME_WIDTH, currentHeight / this.GAME_HEIGHT);
+      const scale = Math.min(
+        currentWidth / this.GAME_WIDTH,
+        currentHeight / this.GAME_HEIGHT,
+      );
 
       const newWidth = this.GAME_WIDTH * scale;
       const newHeight = this.GAME_HEIGHT * scale;
@@ -67,14 +76,18 @@ export class PixiRenderer {
 
       this.app.renderer.resize(this.GAME_WIDTH, this.GAME_HEIGHT);
 
-      console.log(`PixiRenderer: Resized to ${newWidth}x${newHeight} (scaled from ${this.GAME_WIDTH}x${this.GAME_HEIGHT})`);
+      console.log(
+        `PixiRenderer: Resized to ${newWidth}x${newHeight} (scaled from ${this.GAME_WIDTH}x${this.GAME_HEIGHT})`,
+      );
     }
   }
 
   public drawStationLayout(station: Station) {
-    console.log("PixiRenderer: drawStationLayout method called.");
+    console.log('PixiRenderer: drawStationLayout method called.');
     if (!this.app) {
-      console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
+      console.error(
+        'PixiRenderer: Cannot draw layout: PixiJS Application not initialized.',
+      );
       return;
     }
 
@@ -96,11 +109,13 @@ export class PixiRenderer {
       this.stationLayoutContainer.addChild(railGraphic);
     });
 
-    console.log("PixiRenderer: Simple station layout drawn from data.");
+    console.log('PixiRenderer: Simple station layout drawn from data.');
 
     if (this.app) {
       this.app.render();
-      console.log("PixiRenderer: Explicit render called after drawing station layout.");
+      console.log(
+        'PixiRenderer: Explicit render called after drawing station layout.',
+      );
     }
   }
 }

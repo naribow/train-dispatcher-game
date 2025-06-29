@@ -1,4 +1,3 @@
-
 name: CI on Pull Request
 
 on:
@@ -31,7 +30,7 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "style: auto format code"
+          commit_message: 'style: auto format code'
           branch: ${{ github.head_ref }}
 
       - name: Lint

@@ -22,11 +22,11 @@ async function initGame() {
     console.log("main.ts: stationLayoutContainer cleared.");
 
     // 1つ目の駅を描画
-    let station1 = new Station('simple', 50, 100, 500, 50); // ホームx, ホームy, ホーム幅, ホーム高さ
+    const station1 = new Station('simple', 50, 100, 500, 50); // ホームx, ホームy, ホーム幅, ホーム高さ
     renderer.drawStationLayout(station1);
 
     // 2つ目の駅を描画
-    let station2 = new Station('simple', 50, 400, 500, 50); // ホームx, ホームy, ホーム幅, ホーム高さ
+    const station2 = new Station('simple', 50, 400, 500, 50); // ホームx, ホームy, ホーム幅, ホーム高さ
     renderer.drawStationLayout(station2);
 
     console.log("main.ts: Multiple static station layouts drawn.");
