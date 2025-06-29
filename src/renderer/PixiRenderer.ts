@@ -1,3 +1,4 @@
+
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Train } from '../game/Train';
@@ -51,7 +52,11 @@ export class PixiRenderer {
         debugSquare.fill(0xFF0000); // Red
         debugSquare.rect(this.width / 2 - 25, this.height / 2 - 25, 50, 50);
         this.app.stage.addChild(debugSquare);
-        console.log("PixiRenderer: Debug square drawn.");
+        console.log("PixiRenderer: Debug square added to stage.");
+
+        // Explicitly render after adding debug square
+        this.app.render();
+        console.log("PixiRenderer: Explicit render called after adding debug square.");
 
       } else {
         console.error("PixiRenderer: Failed to initialize PixiJS Application or its canvas property is missing after init().");

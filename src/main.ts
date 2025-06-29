@@ -1,3 +1,4 @@
+
 import './style.css';
 import { PixiRenderer } from './renderer/PixiRenderer';
 import { Station } from './game/Station';
@@ -18,6 +19,7 @@ const trains: Train[] = [];
 let lastTime = 0;
 
 async function gameLoop(time: number) {
+  console.log("main.ts: gameLoop started.");
   if (!lastTime) lastTime = time;
   const deltaTime = (time - lastTime) / 1000; // 秒単位
   lastTime = time;
@@ -61,6 +63,7 @@ async function gameLoop(time: number) {
   renderer.drawTrains(trains, station); // 列車を描画
 
   requestAnimationFrame(gameLoop);
+  console.log("main.ts: gameLoop finished.");
 }
 
 async function initGame() {
