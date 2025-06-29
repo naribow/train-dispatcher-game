@@ -1,3 +1,4 @@
+
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 import { Platform } from '../game/Platform';
@@ -75,31 +76,6 @@ export class PixiRenderer {
     }
   }
 
-  public drawPlatform(x: number, y: number, width: number, height: number, color: number) {
-    console.log("PixiRenderer: drawPlatform method called.");
-    if (!this.app) {
-      console.error("PixiRenderer: Cannot draw platform: PixiJS Application not initialized.");
-      return;
-    }
-    const platformGraphic = new Graphics();
-    platformGraphic.rect(x, y, width, height);
-    platformGraphic.fill(color);
-    this.stationLayoutContainer.addChild(platformGraphic);
-  }
-
-  public drawLine(startX: number, startY: number, endX: number, endY: number, width: number, color: number) {
-    console.log("PixiRenderer: drawLine method called.");
-    if (!this.app) {
-      console.error("PixiRenderer: Cannot draw line: PixiJS Application not initialized.");
-      return;
-    }
-    const lineGraphic = new Graphics();
-    lineGraphic.moveTo(startX, startY);
-    lineGraphic.lineTo(endX, endY);
-    lineGraphic.stroke({ width: width, color: color });
-    this.stationLayoutContainer.addChild(lineGraphic);
-  }
-
   public drawStationLayout(station: Station) {
     console.log("PixiRenderer: drawStationLayout method called.");
     if (!this.app) {
@@ -107,14 +83,16 @@ export class PixiRenderer {
       return;
     }
 
-    // this.stationLayoutContainer.removeChildren(); // 削除
-    // console.log("PixiRenderer: stationLayoutContainer cleared."); // 削除
+    // stationLayoutContainerはinitGameでクリアされるので、ここではクリアしない
+    // this.stationLayoutContainer.removeChildren();
+    // console.log("PixiRenderer: stationLayoutContainer cleared.");
 
     // ホームの描画
     station.platforms.forEach(platform => {
       const platformGraphic = new Graphics();
       platform.draw(platformGraphic);
       this.stationLayoutContainer.addChild(platformGraphic);
+      console.log(`PixiRenderer: Platform drawn at x=${platform.x}, y=${platform.y}, width=${platform.width}, height=${platform.height}`);
     });
 
     // 線路の描画
@@ -122,6 +100,7 @@ export class PixiRenderer {
       const railGraphic = new Graphics();
       rail.draw(railGraphic);
       this.stationLayoutContainer.addChild(railGraphic);
+      console.log(`PixiRenderer: Rail drawn from (${rail.start.x}, ${rail.start.y}) to (${rail.end.x}, ${rail.end.y})`);
     });
 
     console.log("PixiRenderer: Simple station layout drawn from data.");
