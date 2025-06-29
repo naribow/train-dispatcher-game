@@ -1,4 +1,3 @@
-
 import { Application, Graphics, Container } from 'pixi.js';
 import { Station } from '../game/Station';
 
@@ -70,19 +69,19 @@ export class PixiRenderer {
 
     // 駅のホーム (例: 2つのホーム)
     const platform1 = new Graphics();
-    platform1.fill(0xAAAAAA); // 灰色
-    platform1.rect(50, 200, 700, 50); // x, y, width, height
+    platform1.fill(0xFFFF00); // 明るい黄色
+    platform1.rect(50, 200, 500, 50); // x, y, width, height
     this.stationLayoutContainer.addChild(platform1); // stationLayoutContainerに追加
 
     const platform2 = new Graphics();
-    platform2.fill(0xAAAAAA);
-    platform2.rect(50, 350, 700, 50);
+    platform2.fill(0xFFFF00);
+    platform2.rect(50, 350, 500, 50);
     this.stationLayoutContainer.addChild(platform2); // stationLayoutContainerに追加
 
     // 線路 (Stationクラスから取得)
     station.trackSegments.forEach(segment => {
       const track = new Graphics();
-      track.stroke({ width: 5, color: 0x333333 }); // 濃い灰色
+      track.stroke({ width: 5, color: 0x00FF00 }); // 明るい緑色
       track.moveTo(segment.start.x, segment.start.y);
       track.lineTo(segment.end.x, segment.end.y);
       this.stationLayoutContainer.addChild(track); // stationLayoutContainerに追加
@@ -101,10 +100,16 @@ export class PixiRenderer {
 
     // 分岐器 (プレースホルダー)
     const switch1 = new Graphics();
-    switch1.stroke({ width: 5, color: 0x333333 });
-    switch1.moveTo(400, 225);
-    switch1.lineTo(450, 200); // 仮の分岐
+    switch1.stroke({ width: 5, color: 0x00FF00 });
+    switch1.moveTo(300, 225);
+    switch1.lineTo(350, 200); // 仮の分岐
     this.stationLayoutContainer.addChild(switch1); // stationLayoutContainerに追加
     console.log("PixiRenderer: Station layout drawn.");
+
+    // 明示的にレンダリングを呼び出す
+    if (this.app) {
+      this.app.render();
+      console.log("PixiRenderer: Explicit render called after drawing station layout.");
+    }
   }
 }
