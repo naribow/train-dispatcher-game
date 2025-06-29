@@ -1,14 +1,14 @@
 import { Application, Graphics, Container } from 'pixi.js';
-import { Station } from '../game/Station';
-import { Train } from '../game/Train';
-import { TrackSegment } from '../game/TrackSegment';
+import { Station } from '../game/Station'; // 再追加
+import { Train } from '../game/Train'; // 再追加
+import { StraightTrack, CurvedTrack, SwitchTrack, TrackSegment } from '../game/TrackSegment'; // TrackSegmentをインポート
 
 export class PixiRenderer {
   private app: Application | null = null;
   private width: number;
   private height: number;
-  private trainContainer: Container;
-  private stationLayoutContainer: Container;
+  private trainContainer: Container; // 初期化を元に戻す
+  private stationLayoutContainer: Container; // 初期化を元に戻す
 
   // 固定アスペクト比の基準となるサイズ
   private readonly GAME_WIDTH = 1280;
@@ -17,8 +17,8 @@ export class PixiRenderer {
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.trainContainer = new Container();
-    this.stationLayoutContainer = new Container();
+    this.trainContainer = new Container(); // 初期化を元に戻す
+    this.stationLayoutContainer = new Container(); // 初期化を元に戻す
     console.log("PixiRenderer: Constructor called.");
   }
 
@@ -44,8 +44,8 @@ export class PixiRenderer {
       this.app.start(); // Start the rendering loop
       console.log("PixiRenderer: PixiJS rendering loop started.");
 
-      this.app.stage.addChild(this.stationLayoutContainer);
-      this.app.stage.addChild(this.trainContainer);
+      this.app.stage.addChild(this.stationLayoutContainer); // ステージに駅レイアウトコンテナを追加
+      this.app.stage.addChild(this.trainContainer); // ステージに列車コンテナを追加 (駅レイアウトの上に描画されるように)
 
       this.resize();
       window.addEventListener('resize', this.resize.bind(this));
@@ -81,12 +81,13 @@ export class PixiRenderer {
     }
   }
 
+  // clearTrainsを有効にする
   public clearTrains() {
     this.trainContainer.removeChildren();
     console.log("PixiRenderer: trainContainer cleared.");
   }
 
-  public drawStationLayout(station: Station) {
+  public drawStationLayout(station: Station) { // station: Station 引数を再追加
     console.log("PixiRenderer: drawStationLayout method called.");
     if (!this.app) {
       console.error("PixiRenderer: Cannot draw layout: PixiJS Application not initialized.");
@@ -112,7 +113,7 @@ export class PixiRenderer {
     // 線路の描画 (Stationクラスから取得)
     station.trackSegments.forEach(segment => {
       const track = new Graphics();
-      track.lineStyle(5, 0x8B4513); // 茶色
+      track.stroke({ width: 5, color: 0x8B4513 }); // 茶色
       segment.draw(track); // TrackSegmentのdrawメソッドを呼び出す
       this.stationLayoutContainer.addChild(track); // stationLayoutContainerに追加
     });
