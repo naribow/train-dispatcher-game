@@ -1,3 +1,5 @@
+
+import type { Point } from '../../types/geom.ts';
 import type { TrackSegmentData } from './TrackSegmentData.ts';
 import type { PointOfInterestData } from './PointOfInterestData.ts';
 import type { PlatformData } from './PlatformData.ts';
@@ -15,31 +17,51 @@ export interface StationLayoutData {
 export const stationLayoutTestData: StationLayoutData = {
   tracks: [
     {
-      id: 'track_straight_A',
-      points: [{ x: 50, y: 100 }, { x: 250, y: 100 }],
-      length: 200,
-      nextSegmentIds: ['track_curve_B'],
+      id: 'track_entry',
+      points: [{ x: 50, y: 100 }, { x: 200, y: 100 }],
+      length: 150,
+      nextSegmentIds: ['track_diverge_left', 'track_diverge_right'], // Both paths from switch
       prevSegmentIds: [],
-      isPlatformSegment: true,
+      isPlatformSegment: false,
       type: 'straight',
       occupiedBy: null,
     },
     {
-      id: 'track_curve_B',
-      points: [{ x: 250, y: 100 }, { x: 300, y: 150 }, { x: 250, y: 200 }],
-      length: 141.4,
-      nextSegmentIds: ['track_straight_C'],
-      prevSegmentIds: ['track_straight_A'],
+      id: 'track_diverge_left',
+      points: [{ x: 200, y: 100 }, { x: 350, y: 50 }],
+      length: 180.28, // Approx length
+      nextSegmentIds: ['track_exit_left'], // End of line for now
+      prevSegmentIds: ['track_entry'],
       isPlatformSegment: false,
-      type: 'curve',
+      type: 'straight',
       occupiedBy: null,
     },
     {
-      id: 'track_straight_C',
-      points: [{ x: 250, y: 200 }, { x: 50, y: 200 }],
-      length: 200,
-      nextSegmentIds: [],
-      prevSegmentIds: ['track_curve_B'],
+      id: 'track_diverge_right',
+      points: [{ x: 200, y: 100 }, { x: 350, y: 150 }],
+      length: 180.28, // Approx length
+      nextSegmentIds: ['track_exit_right'], // Add next segment for consistency
+      prevSegmentIds: ['track_entry'],
+      isPlatformSegment: false,
+      type: 'straight',
+      occupiedBy: null,
+    },
+    {
+      id: 'track_exit_left',
+      points: [{ x: 350, y: 50 }, { x: 500, y: 50 }],
+      length: 150,
+      nextSegmentIds: [], // End of line
+      prevSegmentIds: ['track_diverge_left'],
+      isPlatformSegment: false,
+      type: 'straight',
+      occupiedBy: null,
+    },
+    {
+      id: 'track_exit_right',
+      points: [{ x: 350, y: 150 }, { x: 500, y: 150 }],
+      length: 150,
+      nextSegmentIds: [], // End of line
+      prevSegmentIds: ['track_diverge_right'],
       isPlatformSegment: false,
       type: 'straight',
       occupiedBy: null,
@@ -47,42 +69,74 @@ export const stationLayoutTestData: StationLayoutData = {
   ],
   pois: [
     {
-      id: 'poi_spawn_A',
-      segmentId: 'track_straight_A',
+      id: 'poi_spawn',
+      segmentId: 'track_entry',
       positionOnSegment: 0,
       type: 'spawn',
       relatedEntityId: null,
     },
     {
-      id: 'poi_despawn_C',
-      segmentId: 'track_straight_C',
+      id: 'poi_despawn_left',
+      segmentId: 'track_diverge_left',
       positionOnSegment: 1,
       type: 'despawn',
       relatedEntityId: null,
     },
     {
-      id: 'poi_signal_A',
-      segmentId: 'track_straight_A',
+      id: 'poi_despawn_right',
+      segmentId: 'track_diverge_right',
+      positionOnSegment: 1,
+      type: 'despawn',
+      relatedEntityId: null,
+    },
+    {
+      id: 'poi_despawn_exit_left',
+      segmentId: 'track_exit_left',
+      positionOnSegment: 1,
+      type: 'despawn',
+      relatedEntityId: null,
+    },
+    {
+      id: 'poi_despawn_exit_right',
+      segmentId: 'track_exit_right',
+      positionOnSegment: 1,
+      type: 'despawn',
+      relatedEntityId: null,
+    },
+    {
+      id: 'poi_signal_entry',
+      segmentId: 'track_entry',
       positionOnSegment: 0.1,
       type: 'signal',
-      relatedEntityId: 'signal_entry_A',
+      relatedEntityId: 'signal_entry',
     },
-  ],
-  platforms: [
     {
-      id: 'platform_1',
-      trackSegmentIds: ['track_straight_A'],
-      drawingRect: { x: 50, y: 80, width: 200, height: 20 },
-      length: 200,
+      id: 'poi_switch_main',
+      segmentId: 'track_entry',
+      positionOnSegment: 0.9,
+      type: 'switch',
+      relatedEntityId: 'switch_diverging_main',
     },
   ],
+  platforms: [],
   signals: [
     {
-      id: 'signal_entry_A',
-      poiId: 'poi_signal_A',
-      controlledSegmentId: 'track_straight_A',
+      id: 'signal_entry',
+      poiId: 'poi_signal_entry',
+      controlledSegmentId: 'track_entry',
       initialState: 'red',
     },
   ],
-  switches: [],
+  switches: [
+    {
+      id: 'switch_diverging_main',
+      poiId: 'poi_switch_main',
+      entrySegmentId: 'track_entry',
+      type: 'diverging',
+      paths: [
+        { id: 'path_left', targetSegmentId: 'track_diverge_left', controlPoints: [{ x: 200, y: 100 }, { x: 350, y: 50 }] },
+        { id: 'path_right', targetSegmentId: 'track_diverge_right', controlPoints: [{ x: 200, y: 100 }, { x: 350, y: 150 }] },
+      ],
+    },
+  ],
 };
