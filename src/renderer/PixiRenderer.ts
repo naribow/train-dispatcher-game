@@ -7,8 +7,6 @@ import type { PointOfInterestData } from '../game/data/PointOfInterestData.ts';
 import type { SwitchData } from '../game/data/SwitchData.ts';
 import { theme } from './ThemeManager.ts';
 import type { GameState } from '../game/GameState.ts';
-import type { Signal } from '../game/Signal.ts';
-import type { Switch } from '../game/Switch.ts';
 import type { Train } from '../game/Train.ts'; // Add this import
 
 export class PixiRenderer {

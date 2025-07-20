@@ -1,5 +1,5 @@
 
-import type { Point } from '../../types/geom.ts';
+
 import type { TrackSegmentData } from './TrackSegmentData.ts';
 import type { PointOfInterestData } from './PointOfInterestData.ts';
 import type { PlatformData } from './PlatformData.ts';
