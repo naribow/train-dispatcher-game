@@ -9,6 +9,7 @@ import { theme } from './ThemeManager.ts';
 import type { GameState } from '../game/GameState.ts';
 import type { Signal } from '../game/Signal.ts';
 import type { Switch } from '../game/Switch.ts';
+import type { Train } from '../game/Train.ts'; // Add this import
 
 export class PixiRenderer {
   private app: PIXI.Application;
@@ -116,7 +117,7 @@ export class PixiRenderer {
     });
 
     // Update train positions
-    gameState.trains.forEach(train => {
+    gameState.trains.forEach((train: Train) => {
       let trainGraphic = this.trainGraphics.get(train.id);
       if (!trainGraphic) {
         trainGraphic = new PIXI.Graphics();
